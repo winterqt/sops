@@ -10,6 +10,7 @@ import (
 
 	"filippo.io/age"
 	"filippo.io/age/armor"
+	"filippo.io/age/plugin"
 	"github.com/sirupsen/logrus"
 	"go.mozilla.org/sops/v3/logging"
 )
@@ -29,7 +30,7 @@ type MasterKey struct {
 	Recipient    string // a Bech32-encoded public key
 	EncryptedKey string // a sops data key encrypted with age
 
-	parsedRecipient *age.X25519Recipient // a parsed age public key
+	parsedRecipient age.Recipient // a parsed age public key
 }
 
 // Encrypt takes a sops data key, encrypts it with age and stores the result in the EncryptedKey field.
@@ -135,7 +136,7 @@ func (key *MasterKey) Decrypt() ([]byte, error) {
 		ageKeyReaderName = ageKeyFilePath
 	}
 
-	identities, err := age.ParseIdentities(ageKeyReader)
+	identities, err := plugin.ParseIdentities2(ageKeyReader)
 
 	if err != nil {
 		return nil, err
@@ -212,8 +213,8 @@ func masterKeyFromRecipient(recipient string) (*MasterKey, error) {
 }
 
 // parseRecipient attempts to parse a string containing an encoded age public key
-func parseRecipient(recipient string) (*age.X25519Recipient, error) {
-	parsedRecipient, err := age.ParseX25519Recipient(recipient)
+func parseRecipient(recipient string) (age.Recipient, error) {
+	parsedRecipient, err := plugin.ParseRecipient2(recipient)
 
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse input as Bech32-encoded age public key: %w", err)
