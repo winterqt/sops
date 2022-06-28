@@ -113,3 +113,5 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gotest.tools v2.2.0+incompatible // indirect
 )
+
+replace filippo.io/age v1.0.0 => github.com/tomberek/age v1.0.1-0.20220521040602-76666c0fb36d
